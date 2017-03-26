@@ -272,3 +272,33 @@ class Thumbnail(object):
         else:
             processor = ResizeToFit(width=self.width, height=self.height, upscale=self.upscale)
         return processor.process(img)
+
+
+class ResizeToFitWidth(object):
+    """
+    Resizes an image to fit within the specified width.
+
+    """
+
+    def __init__(self, width=None, height=None, upscale=True):
+        """
+        :param width: The maximum width of the desired image.
+        :param height: The maximum height of the desired image.
+        :param upscale: A boolean value specifying whether the image should
+            be enlarged if its dimensions are smaller than the target
+            dimensions.
+
+        """
+        self.width = width
+        self.height = height
+        self.upscale = upscale
+
+    def process(self, img):
+        cur_width, cur_height = img.size
+        if self.width is None:
+            return img
+        ratio = float(self.width) / cur_width
+        new_dimensions = (int(round(cur_width * ratio)),
+                          int(round(cur_height * ratio)))
+        img = Resize(new_dimensions[0], new_dimensions[1], upscale=self.upscale).process(img)
+        return img
